@@ -4,7 +4,7 @@ package com.dotinstall.calendarpractice;
  * Created by gosho on 2017/12/31.
  */
 
-import android.icu.util.Calendar;
+import java.util.Calendar;
 import android.util.Log;
 
 /**
@@ -33,17 +33,17 @@ public class CalendarInfo {
     private void createFields() {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
-        Log.e("calendar", calendar.toString());
-
 
         // 月の初めの曜日を求めます。
         calendar.set(year, month - 1, 1); // 引数: 1月: 0, 2月: 1, ...
         this.startDay = calendar.get(Calendar.DAY_OF_WEEK);//曜日を取得
+        Log.e("calendarSet", calendar.toString());
 
         // 月末の日付を求めます。
         calendar.add(Calendar.MONTH, 1);
         calendar.add(Calendar.DATE, -1);
         this.lastDate = calendar.get(Calendar.DATE);//日を取得
+        Log.e("calendarGet", calendar.toString());
         int dayCount = 1;
         boolean isStart = false;
         boolean isEnd = false;
@@ -58,6 +58,7 @@ public class CalendarInfo {
                 if(isStart == false && (this.startDay -1 ) == i) {
                     //日にちセット開始
                     isStart = true;
+
                 }
 
                 if(isStart) {

@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
-import android.icu.util.Calendar;
+import java.util.Calendar;
 import android.icu.util.TimeZone;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,10 +19,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button nextMonthButton = null;				//次の月へボタン
-    private Button previousMonthButton = null;			//前の月へボタン
+    private TextView nextMonthButton = null;				//次の月へボタン
+    private TextView previousMonthButton = null;			//前の月へボタン
     private TextView headerMonthText = null;			//年月表示テキストビュー
 
     private int currentYear = 0;						//現在表示中の年
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar_frame);
 
+        /*
         // 現在日時の取得
         Date now = new Date(System.currentTimeMillis());
         // 日時のフォーマットオブジェクト作成
@@ -47,11 +48,15 @@ public class MainActivity extends AppCompatActivity {
         formatter.setTimeZone(TimeZone.getTimeZone("GMT")); //タイムゾーン変更？
         Log.e("formatter", formatter.toString());
 
+
         // フォーマット
         String nowText = formatter.format(now);
         // 表示
         TextView textView = (TextView) findViewById(R.id.todayTextView);
         textView.setText(nowText);
+        */
+
+        initializeControl();
 
     }
 
@@ -63,11 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeControl() {
 
-        this.nextMonthButton = (Button) findViewById(R.id.backMonthTextView);
+        this.nextMonthButton = (TextView) findViewById(R.id.moveMonthTextView);
         Log.e("nextMonth", nextMonthButton.toString());
-        this.nextMonthButton.setOnClickListener((View.OnClickListener)this);
-        this.previousMonthButton = (Button) findViewById(R.id.backMonthTextView);
-        this.previousMonthButton.setOnClickListener((View.OnClickListener)this);
+        this.nextMonthButton.setOnClickListener(this);
+        this.previousMonthButton = (TextView) findViewById(R.id.backMonthTextView);
+        this.previousMonthButton.setOnClickListener(this);
 
         this.headerMonthText = (TextView)findViewById(R.id.todayTextView);
 
@@ -150,19 +155,25 @@ public class MainActivity extends AppCompatActivity {
         this.dayTextList.add(info);
 
         Calendar cal1 = Calendar.getInstance();            //(1)オブジェクトの生成
+        Log.e("cal1GetInstance", cal1.toString());
 
         this.currentYear = cal1.get(Calendar.YEAR);        //(2)現在の年を取得
+        Log.e("cal1Year", cal1.toString());
+
         this.currentMonth = cal1.get(Calendar.MONTH) + 1;  //(3)現在の月を取得
+        Log.e("cal1Month", cal1.toString());
 
         this.nowYear = this.currentYear;
         this.nowMonth = this.currentMonth;
         this.nowDay = cal1.get(Calendar.DATE);                //(4)現在の日を取得
+        Log.e("cal1NowDay", cal1.toString());
+
 
         int id = 0;
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 7; j++) {
                 TextView tv = (TextView) findViewById(this.dayTextList.get(id).getTextViewId());
-                tv.setOnClickListener((View.OnClickListener)this);
+                tv.setOnClickListener(this);
 
                 tv.setBackgroundResource(R.drawable.text_day_line);
                 if (j == 0) {
@@ -212,14 +223,12 @@ public class MainActivity extends AppCompatActivity {
             tg.setDayNum(0);
             tg.setSelected(false);
             tg.getTextObject().setText(tg.getDispString());
-            Log.e("tg", tg.toString());
+            //Log.e("tg", tg.toString());
 
         }
 
         //カレンダーテーブル作成
         CalendarInfo cl = new CalendarInfo(currentYear, currentMonth);
-        Log.e("cl", cl.toString());
-
 
         int row = 0;
         int col = 0;
@@ -229,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
             if(cl.calendarMatrix[row][col] != 0) {
                 // 日付表示
                 tg.setDayNum(cl.calendarMatrix[row][col]);
+                Log.e("setDayNum", cl.toString());
                 tg.getTextObject().setText(tg.getDispString());
                 if(this.nowYear == this.currentYear
                         && this.nowMonth == this.currentMonth
@@ -248,8 +258,41 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //年月表示
+        /*
         this.headerMonthText.setText(String.valueOf(this.currentYear)
-                + "年" + String.valueOf(this.currentMonth) + "月" );
+                + "年" + String.valueOf(this.currentMonth) + "月" ); */
+
+
+    }
+
+    public void onClick(View v) {
+        // TODO 自動生成されたメソッド・スタブ
+        if(v.getId() == R.id.moveMonthTextView) {
+            this.SetCalendar(+1);
+        }
+        else if(v.getId() == R.id.backMonthTextView) {
+            this.SetCalendar(-1);
+        }
+        else
+        {
+            for(int i = 0 ; i < this.dayTextList.size(); i++) {
+                if(this.dayTextList.get(i).getTextViewId() == v.getId()) {
+                    //this.dayTextList.get(i).getTextObject().setBackgroundResource(R.drawable.text_selected_line);
+                    this.dayTextList.get(i).setSelected(true);
+                }
+                else {
+                    if(this.dayTextList.get(i).isNowDay() == true) {
+                        //this.dayTextList.get(i).getTextObject().setBackgroundResource(R.drawable.text_now_line);
+                        this.dayTextList.get(i).setSelected(false);
+                    }
+                    else if(this.dayTextList.get(i).isSelected()) {
+                        this.dayTextList.get(i).getTextObject().setBackgroundResource(R.drawable.text_day_line);
+                        this.dayTextList.get(i).setSelected(false);
+                    }
+                }
+            }
+        }
+
     }
 
 

@@ -4,6 +4,7 @@ package com.dotinstall.calendarpractice;
  * Created by gosho on 2017/12/31.
  */
 
+import android.util.Log;
 import android.widget.TextView;
 
 /**
