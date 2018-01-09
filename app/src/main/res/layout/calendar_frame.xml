@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <Button
+                <TextView
                     android:layout_width="30dp"
                     android:layout_height="15dp"
                     android:text="前月"
@@ -79,7 +79,7 @@
                     android:fontFamily="SERIF"
                     android:textSize="17sp" />
 
-                <Button
+                <TextView
                     android:layout_width="30dp"
                     android:layout_height="15dp"
                     android:id="@+id/moveMonthTextView"
